@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cookie Counter</title>
+</head>
+<body>
+    <h1>Cookies eaten this semester: {{ count }}</h1>
+    <a href="{{ url_for('increment') }}">Increment Count</a>
+    
+    <h2>Recent Updates</h2>
+    <ul>
+    {% for log in logs %}
+        <li>{{ log.username }} updated the count on {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+    {% endfor %}
+    </ul>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

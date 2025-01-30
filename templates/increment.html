@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Increment Cookie Count</title>
+</head>
+<body>
+    <h1>Increment Cookie Count</h1>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Your Name" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <input type="submit" value="Increment">
+    </form>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
