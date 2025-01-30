@@ -36,8 +36,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Tailwind CSS
-static/css/output.css
 
 # IDE specific files
 .idea/
