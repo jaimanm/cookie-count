@@ -17,11 +17,15 @@
             <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
             <div class="space-y-2">
                 {% for log in logs %}
-                <div class="bg-gray-50 p-3 rounded-md">
-                    <span class="font-medium text-gray-800">{{ log.username }}</span>
-                    <span class="text-gray-500 text-sm">
+                <div class="bg-gray-50 p-3 rounded-md text-sm">
+                    {% if log.new_count > log.previous_count %}
+                        <span class="text-gray-800">{{ log.username }} recorded jaiman eating {{ log.new_count - log.previous_count }} {{ "cookie" if log.new_count - log.previous_count == 1 else "cookies" }}</span>
+                    {% else %}
+                        <span class="text-gray-800">{{ log.username }} changed the count to {{ log.new_count }}</span>
+                    {% endif %}
+                    <div class="text-gray-500 text-xs mt-1">
                         {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
-                    </span>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

@@ -1,13 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cookies.db'
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a random secret key
+app.config['SECRET_KEY'] = 'minecraft'
 db = SQLAlchemy(app)
 
-GLOBAL_PASSWORD = 'your_password'  # Change this to your desired password
+GLOBAL_PASSWORD = 'ftr'
 
 class Counter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +17,8 @@ class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    previous_count = db.Column(db.Integer, nullable=False)
+    new_count = db.Column(db.Integer, nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -38,15 +40,28 @@ def increment():
         password = request.form['password']
         if password == GLOBAL_PASSWORD:
             counter = Counter.query.first()
-            counter.count += 1
-            log = Log(username=username)
-            db.session.add(log)
-            db.session.commit()
-            flash('Cookie count incremented successfully!', 'success')
-            return redirect(url_for('index'))
+            return render_template('increment.html', count=counter.count, authenticated=True, username=username)
         else:
-            flash('Invalid password', 'error')
-    return render_template('increment.html')
+            return render_template('increment.html', authenticated=False)
+    return render_template('increment.html', authenticated=False)
+
+@app.route('/update_count', methods=['POST'])
+def update_count():
+    new_count = request.form.get('count', type=int)
+    username = request.form.get('username')
+    
+    if new_count is not None and username:
+        counter = Counter.query.first()
+        old_count = counter.count
+        counter.count = new_count
+        log = Log(
+            username=username,
+            previous_count=old_count,
+            new_count=new_count
+        )
+        db.session.add(log)
+        db.session.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
