@@ -2,24 +2,37 @@
 <html>
 <head>
     <title>Cookie Counter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
-<body>
-    <h1>Cookies eaten this semester: {{ count }}</h1>
-    <a href="{{ url_for('increment') }}">Increment Count</a>
-    
-    <h2>Recent Updates</h2>
-    <ul>
-    {% for log in logs %}
-        <li>{{ log.username }} updated the count on {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</li>
-    {% endfor %}
-    </ul>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <p class="{{ category }}">{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Cookie Counter</h1>
+        
+        <div class="text-center mb-8">
+            <div class="text-6xl font-bold text-blue-500 mb-2">{{ count }}</div>
+            <p class="text-gray-600">Total Cookies</p>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
+            <div class="space-y-2">
+                {% for log in logs %}
+                <div class="bg-gray-50 p-3 rounded-md">
+                    <span class="font-medium text-gray-800">{{ log.username }}</span>
+                    <span class="text-gray-500 text-sm">
+                        {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ url_for('increment') }}" 
+               class="inline-block bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition duration-200">
+                Add Cookie
+            </a>
+        </div>
+    </div>
 </body>
 </html>
