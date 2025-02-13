@@ -48,7 +48,7 @@ def increment():
             return render_template('increment.html', authenticated=False)
     return render_template('increment.html', authenticated=False)
 
-@app.route('/update-count', methods=['POST'])
+@app.route('/update_count', methods=['POST'])
 def update_count():
     new_count = request.form.get('count', type=int)
     username = request.form.get('username')
