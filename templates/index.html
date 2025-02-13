@@ -20,7 +20,7 @@
                 {% for log in logs %}
                 <div class="bg-gray-50 p-3 rounded-md text-sm">
                     {% if log.new_count > log.previous_count %}
-                        <span class="text-gray-800">{{ log.username }} recorded jaiman eating {{ log.new_count - log.previous_count }} {{ "cookie" if log.new_count - log.previous_count == 1 else "cookies" }}</span>
+                        <span class="text-gray-800">{{ log.username }} recorded {{"himself" if log.username == "jaiman" else "jaiman"}} eating {{ log.new_count - log.previous_count }} {{ "cookie" if log.new_count - log.previous_count == 1 else "cookies" }}</span>
                     {% else %}
                         <span class="text-gray-800">{{ log.username }} changed the count to {{ log.new_count }}</span>
                     {% endif %}
