@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cookies.db'
 app.config['SECRET_KEY'] = 'minecraft'
 db = SQLAlchemy(app)
+
+CORS(app)
 
 GLOBAL_PASSWORD = 'ftr'
 
@@ -45,7 +48,7 @@ def increment():
             return render_template('increment.html', authenticated=False)
     return render_template('increment.html', authenticated=False)
 
-@app.route('/update_count', methods=['POST'])
+@app.route('/update-count', methods=['POST'])
 def update_count():
     new_count = request.form.get('count', type=int)
     username = request.form.get('username')
@@ -62,6 +65,30 @@ def update_count():
         db.session.add(log)
         db.session.commit()
     return redirect(url_for('index'))
+
+@app.route('/increment-count', methods=['POST'])
+def increment_count():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    increment_by = request.form.get('increment_by', default=1, type=int)  # Default to 1 if not provided
+
+    if password == GLOBAL_PASSWORD:
+        counter = Counter.query.first()
+        if counter:
+            counter.count += increment_by  # Increment the count by the specified amount
+            log = Log(
+                username=username,
+                previous_count=counter.count - increment_by,  # Previous count before increment
+                new_count=counter.count
+            )
+            db.session.add(log)
+            db.session.commit()
+            return {'message': 'Count incremented successfully', 'new_count': counter.count}, 200
+        else:
+            return {'message': 'Counter not found'}, 404
+    else:
+        return {'message': 'Authentication failed'}, 403
+
 
 if __name__ == '__main__':
     app.run(debug=True)
